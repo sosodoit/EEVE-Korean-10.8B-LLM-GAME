@@ -11,7 +11,7 @@ mkdir -p ./models
 # Hugging Face 환경변수 설정 (토큰 추가 시 여기에)
 export HF_HUB_DISABLE_PROGRESS_BARS=1
 
-/usr/local/bin/hf download heegyu/EEVE-Korean-Instruct-10.8B-v1.0-GGUF ggml-model-Q5_K_M.gguf \
+~/.local/bin/hf download heegyu/EEVE-Korean-Instruct-10.8B-v1.0-GGUF ggml-model-Q5_K_M.gguf \
   --local-dir ./models \
   --force-download \
   --quiet
