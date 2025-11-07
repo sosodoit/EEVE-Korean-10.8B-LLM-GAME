@@ -1,4 +1,16 @@
-# 1. 마녀 페르소나 생성
+#---------------------------------------------------------#
+# witch_persona_prompt    : 마녀 프롬프트
+# ↓
+# ingredients_prompt      : 재료 프롬프트
+# ↓
+# answer_dish_prompt      : 정답 요리 프롬프트
+# ↓
+# santa_hints_prompt      : 산타 힌트 프롬프트
+# witch_chat_prompt       : 마녀 대화용 프롬프트
+# evaluate_dish_prompt    : 요리 평가용 프롬프트
+#---------------------------------------------------------#
+
+
 def witch_persona_prompt(level: str, witch_type: str) -> str:
     return f"""
 너는 요리 게임 속 마녀 '베르타'야.
@@ -22,7 +34,7 @@ def witch_persona_prompt(level: str, witch_type: str) -> str:
 """
 
 
-# 2. 재료 생성
+
 def ingredients_prompt(level: str, ingredient_cnt: int) -> str:
     return f"""
 너는 요리 게임의 관리자야.
@@ -44,7 +56,8 @@ def ingredients_prompt(level: str, ingredient_cnt: int) -> str:
 ]
 """
 
-# 3. 정답 요리 생성
+
+
 def answer_dish_prompt(level: str, persona: str, ingredients: list) -> str:
     return f"""
 너는 요리 게임의 비밀 셰프야.
@@ -70,10 +83,6 @@ def answer_dish_prompt(level: str, persona: str, ingredients: list) -> str:
 
 
 
-
-# 4. 산타 힌트 생성
-import random
-
 EVALUATION_ITEMS = [
     "주요 재료가 동일하다", "부재료 중 절반 이상이 일치한다", "사용된 양념이나 소스가 유사하다",
     "조리법이 같다", "조리 도구가 비슷하다", "요리의 형태나 모양이 유사하다",
@@ -85,6 +94,7 @@ EVALUATION_ITEMS = [
     "조미료 종류가 비슷하다", "양과 구성이 유사하다"
 ]
 
+import random
 def santa_hints_prompt(answer_dish: str, taste: str, selected_items: list) -> str:
     return f"""
 너는 게임 속 산타야.
@@ -105,7 +115,8 @@ def santa_hints_prompt(answer_dish: str, taste: str, selected_items: list) -> st
 ]
 """
 
-# 5. 마녀 대화 프롬프트
+
+
 def witch_chat_prompt(level: str, persona: str, ingredients: list, chat_history: list, user_msg: str) -> str:
     return f"""
 너는 까다롭고 장난기 많은 마녀 '베르타'야. 너가 마녀고, 너가 베르다야.
@@ -124,7 +135,9 @@ def witch_chat_prompt(level: str, persona: str, ingredients: list, chat_history:
 - 너가 마녀고, 너가 베르타야. 너가 누구냐는 질문에 너는 마녀 베르타라고만 대답해.
 """
 
-# 6. 요리 평가 프롬프트
+
+
+
 def evaluate_dish_prompt(level: str, persona: str, answer_dish: str, user_dish: str) -> str:
     return f"""
 너는 요리 심사관이자 마녀 '베르타'야. 
@@ -182,3 +195,4 @@ def evaluate_dish_prompt(level: str, persona: str, answer_dish: str, user_dish: 
   "feedback": "이 정도면 좀 먹을만하네."
 }}
 """
+
