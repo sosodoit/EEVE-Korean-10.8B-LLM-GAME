@@ -58,6 +58,7 @@ def ingredients_prompt(level: str, ingredient_cnt: int) -> str:
 
 
 
+
 def answer_dish_prompt(level: str, persona: str, ingredients: list) -> str:
     return f"""
 너는 요리 게임의 비밀 셰프야.
@@ -70,16 +71,18 @@ def answer_dish_prompt(level: str, persona: str, ingredients: list) -> str:
 
 ### 지시사항 ###
 1. 재료 목록 속 재료 이름을 최소 절반 이상 단어 그대로 요리 이름에 포함해라.
-2. 마녀의 기괴한 취향이 느껴지도록, 재료 조합이나 수식어에 마녀다운 느낌을 넣어라.
+2. 마녀{{persona}}의 기괴한 취향이 느껴지도록, 재료 조합이나 수식어에 마녀다운 느낌을 넣어라.
 3. 주어진 재료만을 이용해서 만든 특별한 요리를 한 문장으로 설명해라.
 4. 재료나 형용사가 마녀 느낌이면 된다.
 5. JSON 형식으로만 출력한다.
+6. {{ingredients}} 재료 이름이 포함된 요리를 설명과 함께 요리이름을 생성
 
 출력 형식:
 {{
-  "answer_dish": "재료 이름이 포함된 요리 이름 한 줄"
+  "answer_dish": "재료 이름이 포함된 요리를 설명과 함께 요리이름을 생성 한 줄"
 }}
 """
+
 
 
 
@@ -148,6 +151,7 @@ def evaluate_dish_prompt(level: str, persona: str, answer_dish: str, user_dish: 
 
 아래 체크리스트를 각 항목별로 '예' 또는 '아니오'로 판단해.
 각 항목이 '예'이면 1점, '아니오'면 0점이며, (예 개수 ÷ 20 × 100)을 최종 점수로 계산해.
+그리고 마지막에 너가 생각하기에 {{user_dish}}와 {{asnwer_dish}}가 완전 다른지 비슷한지 판단해서 결과를 결정해.
 
 ---
 

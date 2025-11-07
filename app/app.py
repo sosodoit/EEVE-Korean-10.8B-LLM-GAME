@@ -301,8 +301,8 @@ def render_rudolph_and_cooking():
         </div>
     """, unsafe_allow_html=True)
 
-    # 요리 공간
-    render_cooking_area()
+    # # 요리 공간
+    # render_cooking_area()
 
 
 
@@ -396,12 +396,14 @@ def game_page():
     with right:
         st.markdown('<div class="equal-box">', unsafe_allow_html=True)
         render_rudolph_and_cooking()
+        # 요리 공간
+        render_cooking_area()
         st.markdown('</div>', unsafe_allow_html=True)
-
+        # 최종 결과
+        render_result()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 최종 결과
-    render_result()
+
 
 
 
