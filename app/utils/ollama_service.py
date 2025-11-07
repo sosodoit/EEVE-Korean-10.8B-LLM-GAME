@@ -1,33 +1,38 @@
+#-----------------------------------------------------#
+# log_game_event       : 평가로그체킹
+# call_ollama          : 시스템역할
+# llm_witch_persona    : 마녀 생성
+# llm_ingredients      : 재료 생성 
+# llm_answer_dish      : 정답 요리 생성
+# llm_santa_hints      : 산타 힌트 생성
+# llm_witch_chat       : 마녀와의 대화
+# ai_evaluate_dish     : 마녀의 요리 평가
+#-----------------------------------------------------#
 import json
 import numpy as np
 import random
 from pathlib import Path
 from datetime import datetime
 from utils.ollama_client import chat_with_ollama, chat_with_ollama_msg
-from utils.prompts import (
-    EVALUATION_ITEMS,
-    witch_persona_prompt,
-    ingredients_prompt,
-    answer_dish_prompt,
-    santa_hints_prompt,
-    witch_chat_prompt,
-    evaluate_dish_prompt,
-)
+from utils.prompts import EVALUATION_ITEMS, witch_persona_prompt, ingredients_prompt, answer_dish_prompt, santa_hints_prompt, witch_chat_prompt, evaluate_dish_prompt
 
 LOG_DIR = Path("logs")
 LOG_DIR.mkdir(exist_ok=True)
 LOG_FILE = LOG_DIR / "game_log.txt"
 
 
+
+# 평가로그체킹
 def log_game_event(data: dict):
-    """평가 결과를 파일과 콘솔에 기록"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log_entry = f"\n[{timestamp}] EVALUATION LOG\n" + json.dumps(data, ensure_ascii=False, indent=2)
+    log_entry = f"\n[{timestamp}] LOG\n" + json.dumps(data, ensure_ascii=False, indent=2)
     print(log_entry)
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(log_entry + "\n")
 
 
+
+# 시스템역할
 def call_ollama(model_name: str, prompt: str, role: str):
     """
     캐릭터 역할(role)에 따라 Ollama에 요청
@@ -43,9 +48,8 @@ def call_ollama(model_name: str, prompt: str, role: str):
     return response
 
 
-# -----------------------------------------------------
-# 마녀 페르소나 생성
-# -----------------------------------------------------
+
+# 마녀 생성
 def llm_witch_persona(level: str):
     role = "witch"
     if level == "하":
@@ -71,9 +75,9 @@ def llm_witch_persona(level: str):
     return {"persona": persona, "taste": taste}
 
 
-# -----------------------------------------------------
+
+
 # 재료 생성
-# -----------------------------------------------------
 def llm_ingredients(level: str, ingredient_cnt: int):
     role = "chef"
     prompt = ingredients_prompt(level, ingredient_cnt)
@@ -89,9 +93,9 @@ def llm_ingredients(level: str, ingredient_cnt: int):
     return ingredients
 
 
-# -----------------------------------------------------
+
+
 # 정답 요리 생성
-# -----------------------------------------------------
 def llm_answer_dish(level, persona, ingredients):
     role = "chef"
     prompt = answer_dish_prompt(level, persona, ingredients)
@@ -109,7 +113,7 @@ def llm_answer_dish(level, persona, ingredients):
     except json.JSONDecodeError:
         answer_dish = "이상한 요리"
 
-    # 최소 1개 재료 이름 강제 포함
+    # 최소 1개 재료 이름 강제 포함 (개선 필요)
     try:
         if isinstance(ingredients, str):
             ing_list = json.loads(ingredients)
@@ -125,9 +129,7 @@ def llm_answer_dish(level, persona, ingredients):
 
 
 
-# -----------------------------------------------------
 # 산타 힌트 생성
-# -----------------------------------------------------
 def llm_santa_hints(answer_dish, taste):
     role = "santa"
     selected_items = random.sample(EVALUATION_ITEMS, 3)
@@ -145,9 +147,10 @@ def llm_santa_hints(answer_dish, taste):
 
     return hints
 
-# -----------------------------------------------------
+
+
+
 # 마녀와 대화
-# -----------------------------------------------------
 def llm_witch_chat(level, persona, ingredients, chat_history, user_msg):
     role = "witch"
     prompt = witch_chat_prompt(level, persona, ingredients, chat_history, user_msg)
@@ -155,9 +158,9 @@ def llm_witch_chat(level, persona, ingredients, chat_history, user_msg):
     return response.strip()
 
 
-# -----------------------------------------------------
+
+
 # 요리 평가
-# -----------------------------------------------------
 def ai_evaluate_dish(level, persona, user_dish, answer_dish, ingredients=None, score_limit=70):
     role = "witch_judge"
 
