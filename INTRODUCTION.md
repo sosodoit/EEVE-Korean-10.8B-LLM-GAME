@@ -129,7 +129,29 @@ root/
 <br>
 <br>
 
-## 8. 개발 과정 및 트러블 슈팅 
+## 8. 개발 과정
+- 기간: 11/3 ~ 7 (총5일)
+    |Task List|	State|
+    |---|---|
+    |게임 주제 선정|	완료|
+    |게임 스토리 기획|	완료|
+    |게임 로직 설계|	완료|
+    |게임 로직 구현 & 프롬프트 테스트|	완료|
+    |화면 구현|	완료|
+    |부가 기능 구현|	미진행|
+
+- Runpod Billing
+<p align="center">
+    <img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/billing1.png" />
+</p>
+<p align="center">
+    <img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/billing2.png" />
+</p>
+<p align="center">
+    <img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/billing3.png" />
+</p>
+
+## 9. 트러블 슈팅 
 - 아래 내용 [블로그](https://blog.naver.com/reo_n_mary)에 작성해볼 예정임다, 방문 환영!! 🫡
 ``` bash
 # Python 패키지 설치
