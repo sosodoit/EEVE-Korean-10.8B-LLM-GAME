@@ -1,7 +1,7 @@
 #------------------------------------------------------------#
-# init_game    : 게임 초기 설정
-# intro_page   : 시작 페이지
-# game_page    : 게임 페이지
+# init_game                  : 게임 초기 설정
+# intro_page                 : 시작 페이지
+# game_page                  : 게임 페이지
 # render_witch_and_chat      : 마녀와의 대화
 # render_cooking_area        : 요리 공간
 # render_rudolph_and_cooking : 루돌프 상태 
