@@ -267,7 +267,22 @@ def render_cooking_area():
             "game_over": success or st.session_state["attempts"] >= st.session_state["opportunities"]
         })
 
+        # 결과 메시지 출력 (render_result랑 재구성 필요)
+        st.divider()
 
+        st.markdown(f"""{feedback}""", unsafe_allow_html=True)
+        
+        if not st.session_state["game_over"]:
+            if success:
+                st.success(f"놀라워요! 마녀가 매우 만족했어요! ({score}점)")
+            else:
+                st.error(f"마녀가 침묵합니다.. ({score}점)")       
+
+
+        # 게임오버시 render_result() 
+
+
+        
 
 
 def render_rudolph_and_cooking():

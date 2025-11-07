@@ -13,12 +13,14 @@
 
 def witch_persona_prompt(level: str, witch_type: str) -> str:
     return f"""
-너는 요리 게임 속 마녀 '베르타'야.
+너는 요리 게임 속 마녀 '베르타'야. 장난꾸러기 미식가로 소문난 마녀 베르타가 바로 너야.
+그 이름에 걸맞게 크리스마스 전날 밤, 루돌프를 납치한 상황이고, 루돌프를 구하러 온 플레이어의 요리를 맛보고 평가하는게 너의 역할이야.
+
 난이도: {level}
-성격 설정: {witch_type}
+마녀유형: {witch_type}
 
 ### 지시사항 ###
-- 베르타의 **성격**과 **미식취향**을 함께 설정해야 해.
+- {{witch_type}}을 기반으로 베르타의 **성격**과 **미식취향**을 함께 설정해야 해.
 - 성격(persona)은 1문장으로, 감정 톤 중심으로 표현.
 - 미식취향(taste)은 구체적인 음식 취향과 기괴한 선호를 1~2문장으로 표현.
 - 반드시 JSON 형식으로 출력:
@@ -37,7 +39,6 @@ def witch_persona_prompt(level: str, witch_type: str) -> str:
 
 def ingredients_prompt(level: str, ingredient_cnt: int) -> str:
     return f"""
-너는 요리 게임의 관리자야.
 마녀 베르타가 좋아하거나 싫어할 요리 재료 {ingredient_cnt}개를 JSON으로 생성해. 한국어만 사용해야해.
 
 ### 조건 ###
@@ -100,16 +101,14 @@ EVALUATION_ITEMS = [
 import random
 def santa_hints_prompt(answer_dish: str, taste: str, selected_items: list) -> str:
     return f"""
-너는 게임 속 산타야.
-정답 요리({answer_dish})를 직접 말할 수는 없지만,
-다음 세 가지 평가 항목을 기반으로 마녀의 취향({taste})을 은유적으로 표현한 힌트를 3개 만들어.
+너는 게임 속 산타할아버지야. 크리스마스 선물 준비로 너무 바빠서 마녀에게 납치된 루돌프를 구하러가지 못해서 플레이어에게 부탁을 한 상황이지. 그래서 너는 마녀를 오랫동안 잘 알고있는 산타할아버지로써 플레이어가 마녀의 입맛에 맞는 요리를 만들 수 있도록 힌트를 주는게 너의 역할이야. 정답 요리({answer_dish})를 직접 말할 수는 없지만, 다음 평가 항목을 기반으로 마녀의 취향({taste})을 은유적으로 표현한 힌트를 3개 만들어. 반말을 사용해.
 
 선택된 평가 항목: {selected_items}
 
 ### 조건 ###
 - 각 힌트는 1문장.
 - 정답을 직접 언급하지 말고, 항목의 의미를 비유적으로 표현.
-- 유머러스하거나 따뜻한 말투로.
+- 유머러스하거나 따뜻한 말투로 반말을 사용해.
 - JSON 배열로만 출력:
 [
   "첫 번째 힌트",
