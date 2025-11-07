@@ -1,0 +1,10 @@
+# --- Web UI ---
+streamlit>=1.39.0
+
+# --- LLM 연결 ---
+ollama>=0.1.9        
+
+# --- 기타 유틸 ---
+python-dotenv>=1.0.1
+requests>=2.31.0
+hf_transfer

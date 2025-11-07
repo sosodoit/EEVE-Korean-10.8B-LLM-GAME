@@ -1,0 +1,267 @@
+/* ====================================================== */
+/* ❄️ Game Page Style - 루돌프를 돌려줘 */
+/* ====================================================== */
+
+/* 전체 폰트 & 배경 */
+body {
+    font-family: "Pretendard", "Noto Sans KR", sans-serif;
+    background: linear-gradient(180deg, #f8fcff 0%, #ffffff 100%);
+    color: #222;
+}
+
+/* ====================================================== */
+/* 🪶 공통 카드 스타일 */
+/* ====================================================== */
+.info-card {
+    background: #fff;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 15px;
+    padding: 25px 30px;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+.info-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2f5d62;
+    margin-bottom: 12px;
+    border-bottom: 1.5px solid #e5e5e5;
+}
+.hint-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 4px 0 6px 8px;
+    color: #444;
+}
+.hint-sub {
+    font-size: 0.95rem;
+    color: #777;
+    margin-left: 12px;
+}
+
+/* ====================================================== */
+/* 🎅 산타 힌트 */
+/* ====================================================== */
+.santa-box {
+    margin-bottom: 15px;
+}
+.locked {
+    opacity: 0.85;
+    position: relative;
+}
+.locked::after {
+    content: "🎁 산타의 힌트를 열어보세요!";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #e4f4ff 0%, #ffd7d7 100%);
+    color: #7a1b1b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 15px;
+}
+.unlocked::after {
+    display: none;
+}
+
+/* ====================================================== */
+/* 🧂 재료칩 */
+/* ====================================================== */
+.ingredient-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+}
+.ingredient-chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #e8f5e9, #d0ebd5);
+    color: #2f5d62;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 20px;
+    padding: 6px 14px;
+    border: 1px solid #b7e0c0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+.ingredient-chip:hover {
+    background: linear-gradient(135deg, #d7f0db, #bee3c7);
+    transform: translateY(-1px);
+}
+
+/* ====================================================== */
+/* 🧙‍♀️ 마녀 대화 박스 */
+/* ====================================================== */
+.witch-dialogue-box {
+    border: 2px solid #d3c0f7;
+    border-radius: 15px;
+    background: #faf7ff;
+    padding: 18px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+.dialogue-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #45286f;
+    margin-bottom: 8px;
+}
+.chat-panel {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 14px;
+    background: #fafafa;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: 8px;
+}
+.bubble-user,
+.bubble-witch {
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin: 6px 0;
+    display: inline-block;
+    max-width: 85%;
+    font-size: 0.95rem;
+}
+.bubble-user {
+    background: #e3f2fd;
+    align-self: flex-end;
+}
+.bubble-witch {
+    background: #f3e5f5;
+    align-self: flex-start;
+}
+
+/* ====================================================== */
+/* 🎮 게임 현황 로그 */
+/* ====================================================== */
+.game-status {
+    background: #f9fbff;
+    border: 2px solid #c8e0ff;
+}
+.game-log {
+    list-style-type: none;
+    margin: 0;
+    padding: 0 10px;
+}
+.game-log li {
+    font-size: 0.95rem;
+    margin: 6px 0;
+    color: #444;
+}
+
+/* ====================================================== */
+/* 🍳 요리 공간 */
+/* ====================================================== */
+.cooking-box {
+    margin-top: 10px;
+    border: 2px solid #f3d4a9;
+    background: #fffaf4;
+    border-radius: 15px;
+    padding: 18px;
+}
+.cauldron-box {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+.cauldron-appear {
+    animation: pop 2s ease-in-out;
+}
+@keyframes pop {
+    0% { opacity: 0; transform: scale(0.5) translateY(40px); }
+    50% { opacity: 1; transform: scale(1.1) translateY(0px); }
+    100% { opacity: 0; transform: scale(0.6) translateY(-40px); }
+}
+
+/* ====================================================== */
+/* 🧾 결과 페이지 */
+/* ====================================================== */
+.result-summary {
+    text-align: center;
+    background: #f9fff8;
+    border-radius: 15px;
+    padding: 20px;
+    border: 2px solid #bfe3c5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+.result-summary p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* ====================================================== */
+/* 진행 상태바 (남은 시도) */
+/* ====================================================== */
+.attempt-bar {
+    background: #f0f8ff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #c5e4ff;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 600;
+    color: #1f4e79;
+}
+
+/* ====================================================== */
+/* 반응형 */
+/* ====================================================== */
+@media (max-width: 768px) {
+    .info-card {
+        padding: 18px;
+    }
+    .info-title {
+        font-size: 1.05rem;
+    }
+    .hint-text,
+    .bubble-user,
+    .bubble-witch,
+    .game-log li {
+        font-size: 0.9rem;
+    }
+}
+
+.info-card.witch-box,
+.info-card.rudolph-box {
+    min-height: 280px;  /* 기본 높이 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ====================================================== */
+/* 🧙‍♀️ 대화창 & 🍳 요리 공간 높이 맞추기 */
+/* ====================================================== */
+.equal-row {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.equal-row > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.equal-box {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    border: 1.5px solid #e5e5e5 !important;
+    border-radius: 15px !important;
+    background: #ffffff !important;
+    padding: 25px 30px !important;
+    margin: 12px 0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
