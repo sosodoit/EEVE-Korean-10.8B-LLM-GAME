@@ -1,18 +1,20 @@
-import streamlit as st
-from pathlib import Path
+#------------------------------------------------------------#
+# init_game    : 게임 초기 설정
+# intro_page   : 시작 페이지
+# game_page    : 게임 페이지
+# render_witch_and_chat      : 마녀와의 대화
+# render_cooking_area        : 요리 공간
+# render_rudolph_and_cooking : 루돌프 상태 
+# render_result              : 결과 판정 메세지
+#------------------------------------------------------------#
 import json
 import time 
 import pathlib
+from pathlib import Path
+import streamlit as st
 
 from utils.loader import load_css, render_image, img_to_base64
-from utils.ollama_service import (
-    llm_witch_persona,
-    llm_ingredients,
-    llm_answer_dish,
-    llm_santa_hints,
-    llm_witch_chat,
-    ai_evaluate_dish,
-)
+from utils.ollama_service import llm_witch_persona, llm_ingredients, llm_answer_dish, llm_santa_hints, llm_witch_chat, ai_evaluate_dish
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
@@ -20,9 +22,8 @@ ASSETS_DIR = BASE_DIR / "assets"
 st.set_page_config(page_title="루돌프를 돌려줘", layout="wide")
 
 
-#------------------------------------------------------------#
-# 1. 초기 설정
-#------------------------------------------------------------#
+
+
 def init_game(level):
     
     if level == "하":
@@ -74,9 +75,8 @@ def init_game(level):
     })
 
 
-#------------------------------------------------------------#
-# 2. 시작 페이지
-#------------------------------------------------------------#
+
+
 def intro_page():
     css = (ASSETS_DIR / "intro.css").read_text(encoding="utf-8")
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
@@ -143,9 +143,200 @@ def intro_page():
 
 
 
-#------------------------------------------------------------#
-# 4. 게임 시작
-#------------------------------------------------------------#
+def render_witch_and_chat():
+
+    # 상태별 마녀 이미지
+    if st.session_state.get("success"):
+        witch_img = "witch.png"
+    elif st.session_state.get("game_over"):
+        witch_img = "witch.png"
+    else:
+        witch_img = "witch.png"
+
+    # 최근 대화 표시
+    if st.session_state["chat_history"]:
+        last_msg = st.session_state["chat_history"][-1]["text"]
+    elif st.session_state.get("feedback"):
+        last_msg = st.session_state["feedback"]
+    else:
+        last_msg = "어디 요리맛좀 봐볼까?"
+
+    # 마녀 카드
+    st.markdown(f"""
+        <div class="info-card witch-box">
+            <div class="info-title">마녀 베르타</div>
+            <div style="text-align:center;">
+                <img src="data:image/png;base64,{img_to_base64(str(ASSETS_DIR / 'img' / witch_img))}" 
+                    class="witch-avatar" width="120">
+            </div>
+            <div class="hint-text" style="text-align:center;">{last_msg}</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # 대화창
+    chat_box = st.container(border=True)
+    with chat_box:
+        for msg in st.session_state["chat_history"]:
+            role = "bubble-user" if msg["role"] == "user" else "bubble-witch"
+            st.markdown(f"<div class='{role}'>{msg['text']}</div>", unsafe_allow_html=True)
+
+    # 대화 입력창
+    turns = st.session_state["chat_turns"]
+    if turns < 3 and not st.session_state["game_over"]:
+        
+        with st.form("chat_form", clear_on_submit=True):
+            msg = st.text_input("마녀의 취향 알아내기", placeholder="예: 올챙이알 좋아해?", label_visibility="collapsed")
+            send = st.form_submit_button("보내기")
+        
+        st.caption(f"남은 대화 횟수: {3 - turns}")
+
+        if send and msg:
+            st.session_state["chat_history"].append({"role": "user", "text": msg})
+            reply = llm_witch_chat(
+                st.session_state["level"],
+                st.session_state["witch_persona"],
+                st.session_state["ingredients"],
+                st.session_state["chat_history"],
+                msg,
+            )
+            st.session_state["chat_history"].append({"role": "assistant", "text": reply})
+            st.session_state["chat_turns"] += 1
+            st.rerun()
+            
+    else:
+        st.info("마녀와의 대화는 최대 3번까지입니다.")
+
+
+
+
+def render_cooking_area():
+    ingredients = st.session_state["ingredients"]
+    if isinstance(ingredients, str):
+        ingredients = json.loads(ingredients)
+
+    ing_html = "".join(f"<span class='ingredient-chip'>{i['name']}</span>" for i in ingredients)
+    cauldron_b64 = img_to_base64(str(ASSETS_DIR / "img" / "cooking-pot.png"))
+
+    st.markdown(f"""
+        <div class="info-card cooking-area">
+            <div class="info-title">마녀의 주방</div>
+            <div class="ingredient-list">{ing_html}</div>
+            <div id="cauldron-box" class="cauldron-box" style="display:none;">
+                <img src="data:image/png;base64,{cauldron_b64}" class="cauldron-appear" style="text-align:center; width="160";">
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+
+    user_dish = st.text_area("마녀의 입맛을 사로잡을 요리 설명", height=120, placeholder="예: 달콤한 딸기 시럽을 뿌린 개구리 눈알...")
+
+    # render_image(str(ASSETS_DIR / "img" / "cooking-pot.png"), css_class="result-img", width=200)
+
+    if st.button("요리 만들기", key="cook_btn", use_container_width=True) and not st.session_state["game_over"]:
+        if not user_dish.strip():
+            st.warning("요리 설명을 입력해주세요.")
+            return
+
+        st.markdown("""
+            <script>
+            const pot = document.getElementById('cauldron-box');
+            pot.style.display = 'flex';
+            pot.style.justifyContent = 'center';
+            pot.style.alignItems = 'center';
+            setTimeout(() => { pot.style.display = 'none'; }, 2000);
+            </script>
+        """, unsafe_allow_html=True)
+
+        time.sleep(2)
+        st.session_state["attempts"] += 1
+        success, feedback, score, checked_items, total_items = ai_evaluate_dish(
+            st.session_state["level"],
+            st.session_state["witch_persona"]["persona"],
+            user_dish,
+            st.session_state["answer_dish"],
+            st.session_state["ingredients"],
+            st.session_state["score_limit"],
+        )
+
+        st.session_state.update({
+            "success": success,
+            "feedback": feedback,
+            "score": score,
+            "checked_items": checked_items,
+            "total_items": total_items,
+            "game_over": success or st.session_state["attempts"] >= st.session_state["opportunities"]
+        })
+
+
+
+
+def render_rudolph_and_cooking():
+
+    # 루돌프 상태
+    attempts = st.session_state["attempts"]
+    if attempts == 0:
+        rudolph_img = "rudolph.png"
+        text = "루돌프의 코가 밝게 빛납니다."
+        sub = "괜찮아, 아직 힘이 남아있어!"
+
+    elif attempts == 1:
+        rudolph_img = "rudolph.png"
+        text = "루돌프의 코가 희미해졌습니다."
+        sub = "조금 어지럽지만 버틸 수 있어..."
+
+    else:
+        rudolph_img = "rudolph.png"
+        text = "루돌프의 코 빛이 거의 사라졌습니다."
+        sub = "오케이 바이..."
+        
+    st.markdown(f"""
+        <div class="info-card rudolph-box">
+            <div class="info-title">마녀에게 잡힌 루돌프</div>
+            <div style="text-align:center;">
+                <img src="data:image/png;base64,{img_to_base64(str(ASSETS_DIR / 'img' / rudolph_img))}" 
+                    class="rudolph-status" width="120">
+            </div>
+            <div class="hint-text" style="text-align:center;">{text}</div>
+            <div class="hint-sub" style="text-align:center;">{sub}</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # 요리 공간
+    render_cooking_area()
+
+
+
+
+def render_result():
+    if not st.session_state["game_over"]:
+        return
+
+    st.divider()
+
+    col1, _, col2, _, col3 = st.columns([1, 0.5, 3, 0.5, 1])
+
+    with col1:
+        st.markdown(f"**최종 점수:** {st.session_state['score']} / 100")
+    
+    with col2:
+        if st.session_state["success"]:
+            st.markdown("<div class='feedback-card success'>😊 베르타: 훌륭해. 루돌프를 데려가도 좋아.</div>", unsafe_allow_html=True)
+            
+        else:
+            st.markdown("<div class='feedback-card fail'>😠 베르타: 아직 멀었어. 다음엔 더 맛있게 만들어보렴.</div>", unsafe_allow_html=True)
+
+    st.markdown("")
+
+    with col3:
+        if st.button("다시 시작", use_container_width=True):
+            for k in list(st.session_state.keys()):
+                del st.session_state[k]
+            st.session_state["page"] = "intro"
+            st.rerun()
+
+
+
+
 def game_page():
     css = (ASSETS_DIR / "game.css").read_text(encoding="utf-8")
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
@@ -215,214 +406,7 @@ def game_page():
 
 
 
-#------------------------------------------------------------#
-# 5. 마녀 대화
-#------------------------------------------------------------#
-def render_witch_and_chat():
 
-    # 상태별 마녀 이미지
-    if st.session_state.get("success"):
-        witch_img = "witch.png"
-    elif st.session_state.get("game_over"):
-        witch_img = "witch.png"
-    else:
-        witch_img = "witch.png"
-
-    # 최근 대화 또는 요리 피드백 표시
-    if st.session_state["chat_history"]:
-        last_msg = st.session_state["chat_history"][-1]["text"]
-    elif st.session_state.get("feedback"):
-        last_msg = st.session_state["feedback"]
-    else:
-        last_msg = "어디 요리맛좀 봐볼까?"
-
-    # -------------------------------
-    # 마녀 카드 (루돌프 카드 스타일 통일)
-    # -------------------------------
-    st.markdown(f"""
-        <div class="info-card witch-box">
-            <div class="info-title">마녀 베르타</div>
-            <div style="text-align:center;">
-                <img src="data:image/png;base64,{img_to_base64(str(ASSETS_DIR / 'img' / witch_img))}" 
-                    class="witch-avatar" width="120">
-            </div>
-            <div class="hint-text" style="text-align:center;">{last_msg}</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # -------------------------------
-    # 대화창 (스크롤 가능)
-    # -------------------------------
-
-    chat_box = st.container(border=True)
-    with chat_box:
-        for msg in st.session_state["chat_history"]:
-            role = "bubble-user" if msg["role"] == "user" else "bubble-witch"
-            st.markdown(f"<div class='{role}'>{msg['text']}</div>", unsafe_allow_html=True)
-
-    # -------------------------------
-    # 대화 입력창
-    # -------------------------------
-    turns = st.session_state["chat_turns"]
-    if turns < 3 and not st.session_state["game_over"]:
-        
-        with st.form("chat_form", clear_on_submit=True):
-            msg = st.text_input("마녀의 취향 알아내기", placeholder="예: 올챙이알 좋아해?", label_visibility="collapsed")
-            send = st.form_submit_button("보내기")
-        
-        st.caption(f"남은 대화 횟수: {3 - turns}")
-
-        if send and msg:
-            st.session_state["chat_history"].append({"role": "user", "text": msg})
-            reply = llm_witch_chat(
-                st.session_state["level"],
-                st.session_state["witch_persona"],
-                st.session_state["ingredients"],
-                st.session_state["chat_history"],
-                msg,
-            )
-            st.session_state["chat_history"].append({"role": "assistant", "text": reply})
-            st.session_state["chat_turns"] += 1
-            st.rerun()
-            
-    else:
-        st.info("마녀와의 대화는 최대 3번까지입니다.")
-
-
-# ------------------------------------------------------------ #
-# 요리 공간
-# ------------------------------------------------------------ #
-def render_cooking_area():
-    ingredients = st.session_state["ingredients"]
-    if isinstance(ingredients, str):
-        ingredients = json.loads(ingredients)
-
-    ing_html = "".join(f"<span class='ingredient-chip'>{i['name']}</span>" for i in ingredients)
-    cauldron_b64 = img_to_base64(str(ASSETS_DIR / "img" / "cooking-pot.png"))
-
-    st.markdown(f"""
-        <div class="info-card cooking-area">
-            <div class="info-title">마녀의 주방</div>
-            <div class="ingredient-list">{ing_html}</div>
-            <div id="cauldron-box" class="cauldron-box" style="display:none;">
-                <img src="data:image/png;base64,{cauldron_b64}" class="cauldron-appear" style="text-align:center; width="160";">
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    
-
-    user_dish = st.text_area("마녀의 입맛을 사로잡을 요리 설명", height=120, placeholder="예: 달콤한 딸기 시럽을 뿌린 개구리 눈알...")
-
-    # render_image(str(ASSETS_DIR / "img" / "cooking-pot.png"), css_class="result-img", width=200)
-
-    if st.button("요리 만들기", key="cook_btn", use_container_width=True) and not st.session_state["game_over"]:
-        if not user_dish.strip():
-            st.warning("요리 설명을 입력해주세요.")
-            return
-
-        st.markdown("""
-            <script>
-            const pot = document.getElementById('cauldron-box');
-            pot.style.display = 'flex';
-            pot.style.justifyContent = 'center';
-            pot.style.alignItems = 'center';
-            setTimeout(() => { pot.style.display = 'none'; }, 2000);
-            </script>
-        """, unsafe_allow_html=True)
-
-        time.sleep(2)
-        st.session_state["attempts"] += 1
-        success, feedback, score, checked_items, total_items = ai_evaluate_dish(
-            st.session_state["level"],
-            st.session_state["witch_persona"]["persona"],
-            user_dish,
-            st.session_state["answer_dish"],
-            st.session_state["ingredients"],
-            st.session_state["score_limit"],
-        )
-
-        st.session_state.update({
-            "success": success,
-            "feedback": feedback,
-            "score": score,
-            "checked_items": checked_items,
-            "total_items": total_items,
-            "game_over": success or st.session_state["attempts"] >= st.session_state["opportunities"]
-        })
-
-
-
-# ------------------------------------------------------------ #
-# 루돌프 상태 + 요리 공간
-# ------------------------------------------------------------ #
-def render_rudolph_and_cooking():
-
-    # 루돌프 상태
-    attempts = st.session_state["attempts"]
-    if attempts == 0:
-        rudolph_img = "rudolph.png"
-        text = "루돌프의 코가 밝게 빛납니다."
-        sub = "괜찮아, 아직 힘이 남아있어!"
-
-    elif attempts == 1:
-        rudolph_img = "rudolph.png"
-        text = "루돌프의 코가 희미해졌습니다."
-        sub = "조금 어지럽지만 버틸 수 있어..."
-
-    else:
-        rudolph_img = "rudolph.png"
-        text = "루돌프의 코 빛이 거의 사라졌습니다."
-        sub = "오케이 바이..."
-        
-    st.markdown(f"""
-        <div class="info-card rudolph-box">
-            <div class="info-title">마녀에게 잡힌 루돌프</div>
-            <div style="text-align:center;">
-                <img src="data:image/png;base64,{img_to_base64(str(ASSETS_DIR / 'img' / rudolph_img))}" 
-                    class="rudolph-status" width="120">
-            </div>
-            <div class="hint-text" style="text-align:center;">{text}</div>
-            <div class="hint-sub" style="text-align:center;">{sub}</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # 요리 공간
-    render_cooking_area()
-
-
-
-
-def render_result():
-    if not st.session_state["game_over"]:
-        return
-
-    st.divider()
-
-
-    col1, _, col2, _, col3 = st.columns([1, 0.5, 3, 0.5, 1])
-
-    with col1:
-        st.markdown(f"**최종 점수:** {st.session_state['score']} / 100")
-    
-    with col2:
-        if st.session_state["success"]:
-            st.markdown("<div class='feedback-card success'>😊 베르타: 훌륭해. 루돌프를 데려가도 좋아.</div>", unsafe_allow_html=True)
-            
-        else:
-            st.markdown("<div class='feedback-card fail'>😠 베르타: 아직 멀었어. 다음엔 더 맛있게 만들어보렴.</div>", unsafe_allow_html=True)
-
-    st.markdown("")
-
-    with col3:
-        if st.button("다시 시작", use_container_width=True):
-            for k in list(st.session_state.keys()):
-                del st.session_state[k]
-            st.session_state["page"] = "intro"
-            st.rerun()
-
-#------------------------------------------------------------#
-# 6. 실행
-#------------------------------------------------------------#
 if __name__ == "__main__":
     defaults = {
         "level": None, 
@@ -447,6 +431,7 @@ if __name__ == "__main__":
         "initialized": False, 
         "cooking": False,
     }
+    
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
