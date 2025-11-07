@@ -130,6 +130,17 @@ root/
 <br>
 
 ## 8. 개발 과정 및 트러블 슈팅 
+- 아래 내용 [블로그](https://blog.naver.com/reo_n_mary)에 작성해볼 예정임다, 방문 환영!! 🫡
+``` bash
+# Python 패키지 설치
+pip install -r requirements.txt
+
+# RunPod 환경 초기 세팅
+bash scripts/run_all.sh
+
+# Streamlit 실행
+streamlit run app/app.py
+```
 - runpod + ollama + streamlit 환경 셋팅 과정
 - streamlit 연결 거부 사태
 - 요리 평가 방식 개선 과정
