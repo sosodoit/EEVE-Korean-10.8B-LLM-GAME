@@ -52,7 +52,7 @@ else:
 ### **요약:** 난이도 선택 → 마녀와 3번 대화 + 재료 보고 요리 설명 3번 시도 → 엔딩
 
 <p align="center">
-    <img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/flow.png" />
+    <img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/flow_v2.png" />
 </p>
 
 <br>
