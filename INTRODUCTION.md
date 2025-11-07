@@ -52,7 +52,7 @@ else:
 ### **요약:** 난이도 선택 → 마녀와 3번 대화 + 재료 보고 요리 설명 3번 시도 → 엔딩
 
 <p align="center">
-    <img width="1000" alt="image" src="https://github.com/user-attachments/assets/56687aac-91d8-4142-b172-e0a5d54890e6" />
+    <img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/flow.png" />
 </p>
 
 <br>
@@ -62,7 +62,7 @@ else:
     - 루돌프 납치 사건 발생 → 산타의 긴급요청!!
     - 난이도(하·중·상) 선택
 
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/5b5a398c-1d26-4e14-8ed5-e36c6a232fe2" />
+<img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/img1.png" />
 <br>
 <br>
 
@@ -74,7 +74,7 @@ else:
     - 산타의 힌트는 3회 사용 가능 `utils.prompts.isanta_hints_prompt` `utils.ollama_service.llm_santa_hints`
     - 정답 제출 3회 시도 가능
 
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/4c6e53bd-5316-41d0-8489-c846d4a3cabf" />
+<img width="1000" alt="image" src="https://github.com/sosodoit/EEVE-Korean-10.8B-LLM-GAME/blob/main/docs/img/img2.png" />
 
 ### **요리 평가 및 엔딩:**
     #기준  
