@@ -1,15 +1,10 @@
-/* ====================================================== */
-/* 🎅 Intro Page Style - "루돌프를 돌려줘" */
-/* ====================================================== */
+/* intro.css  */
 
-/* 기본 설정 */
 body {
     font-family: "Pretendard", "Noto Sans KR", sans-serif;
     background: linear-gradient(180deg, #e6f3ff 0%, #fdfdfd 100%);
     color: #222;
 }
-
-/* 카드 기본 스타일 */
 .section {
     background: #ffffff;
     /* border: 1.5px solid #e5e5e5; */
@@ -18,8 +13,6 @@ body {
     margin: 10px 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
 }
-
-/* 제목 영역 */
 .top-section {
     text-align: center;
     /* border-color: #b7e0c0; */
@@ -32,7 +25,9 @@ body {
     margin: 0;
 }
 
-/* 규칙/스토리 섹션 */
+
+
+
 .rule-section {
     border-color: #c5d9f7;
 }
@@ -49,7 +44,9 @@ body {
     line-height: 1.6;
 }
 
-/* 버튼 그룹 */
+
+
+
 div.stButton > button {
     font-weight: 700;
     border: none;
@@ -61,7 +58,9 @@ div.stButton > button {
     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-/* 난이도 버튼 */
+
+
+
 div.stButton > button[key="easy"] {
     background-color: #4da6ff;
 }
@@ -84,7 +83,9 @@ div.stButton > button[key="hard"]:hover {
     transform: scale(1.05);
 }
 
-/* 시작 버튼 */
+
+
+
 .start-button-box {
     display: flex;
     justify-content: center;
@@ -111,7 +112,9 @@ div.stButton > button[key="start_game"]:active {
     transform: scale(0.96);
 }
 
-/* 반응형 */
+
+
+
 @media (max-width: 768px) {
     .section {
         padding: 18px;
@@ -124,4 +127,5 @@ div.stButton > button[key="start_game"]:active {
         font-size: 1.3rem;
     }
 }
+
 
